@@ -2,14 +2,21 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { prisma } from '../server/db/client'
-import { useState, useEffect } from 'react'
 
-const Home: NextPage = ({ posts }) => {
-  // const [posts, setPosts] = useState([])
-  // useEffect(() => {
-  //   if (initPosts === undefined) return
-  //   setPosts(initPosts)
-  // }, [initPosts])
+interface Post {
+  id: number
+  title: string
+  content: string
+  published: boolean
+  user: string
+  userId: number
+}
+
+interface Posts {
+  posts: Array<Post>
+}
+
+const Home: NextPage<Posts> = ({ posts }: Posts) => {
 
   return (
     <>

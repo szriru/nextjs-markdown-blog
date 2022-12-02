@@ -8,21 +8,21 @@ import DOMPurify from 'dompurify';
 import parse from 'html-react-parser';
 
 const Post = () => {
-    const titleRef = useRef(null)
-    const authorRef = useRef(null)
-    const contentRef = useRef(null)
-    const passwordRef = useRef(null)
+    const titleRef = useRef<HTMLInputElement | null>(null)
+    const authorRef = useRef<HTMLInputElement | null>(null)
+    const contentRef = useRef<HTMLTextAreaElement | null>(null)
+    const passwordRef = useRef<HTMLInputElement | null>(null)
     const router = useRouter()
-    const [preview, setPreview] = useState(null)
-    const handleSubmit = async (e) => {
+    const [preview, setPreview] = useState<string>("")
+
+    const handleSubmit = async (e: any) => {
         e.preventDefault()
-        console.log(titleRef.current.value)
         const res = await fetch('/api/post/', {
             method: 'POST',
             body: JSON.stringify({
-                title: titleRef.current.value,
-                content: contentRef.current.value,
-                password: passwordRef.current.value
+                title: titleRef!.current!.value,
+                content: contentRef!.current!.value,
+                password: passwordRef!.current!.value
             }),
             headers: {
                 'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ const Post = () => {
     }
 
     const handleChange = () => {
-        const markedPreview = marked.parse(contentRef.current.value)
+        const markedPreview = marked.parse(contentRef!.current!.value)
         const clean = DOMPurify.sanitize(markedPreview)
         setPreview(clean)
     }
@@ -74,9 +74,9 @@ const Post = () => {
                                         ref={contentRef}
                                         name="content"
                                         className="p-2 text-black rounded-lg"
-                                        placeholder="content" name="content"
-                                        cols="60"
-                                        rows="20"
+                                        placeholder="content"
+                                        cols={60}
+                                        rows={20}
                                         onChange={handleChange}
                                     >
                                     </textarea>

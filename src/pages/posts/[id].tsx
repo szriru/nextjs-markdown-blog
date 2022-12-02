@@ -1,13 +1,34 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { prisma } from '../../server/db/client'
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import parse from 'html-react-parser';
 
+interface User {
+    id:    number
+    email: string
+    name: string
+    posts: Post[]
+  }
+  
+interface Post {
+    id: number
+    title: string
+    content: string
+    published: boolean
+    user: User
+    userId: number
+}
 
-const Article = ({ post, user }) => {
+interface IProps {
+    post: Post
+    user: User
+}
+
+
+const Article = ({ post, user }: IProps ) => {
     const renderPost = () => {
         const markedPost = marked.parse(post.content)
         const clean = DOMPurify.sanitize(markedPost)
@@ -50,13 +71,13 @@ const Article = ({ post, user }) => {
     );
 };
 
-export const getServerSideProps = async (context) => {
+export const getServerSideProps = async (context: any) => {
     const { id } = context.query
     const post = await prisma?.post.findUnique({
         where: { id: parseInt(id) },
     })
     const user = await prisma?.user.findUnique({
-        where: { id: parseInt(post.userId) }
+        where: { id: post!.userId }
     })
     return {
         props: {
